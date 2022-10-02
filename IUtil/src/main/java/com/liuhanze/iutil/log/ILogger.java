@@ -4,15 +4,19 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.liuhanze.iutil.BuildConfig;
-
 public final class ILogger {
 
     private static final String TAG = "liuhanze";
+
+    private static boolean isDebug = true;
     /**
      * logcat 一条日志最大长度.
      */
     private static final int MAX_LOG_LENGTH = 2000;
+
+    public static void debug(boolean debug){
+        isDebug = debug;
+    }
 
     public static void LogDebug(@NonNull String Tag, @NonNull String text){
         log(Log.DEBUG,Tag,text);
@@ -55,7 +59,7 @@ public final class ILogger {
     }
 
     private static void log(int type,@NonNull String tag,@NonNull String text){
-        if(BuildConfig.DEBUG){
+        if(isDebug){
             int strLength = text.length();
             int start = 0;
             int end = MAX_LOG_LENGTH;
