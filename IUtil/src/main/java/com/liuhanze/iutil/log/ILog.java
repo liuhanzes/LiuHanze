@@ -4,7 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-public final class ILogger {
+public final class ILog {
 
     private static final String TAG = "liuhanze";
 
