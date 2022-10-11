@@ -87,7 +87,8 @@ public final class IByte {
         }
         int len = hexString.length();
         if (len % 2 != 0) {
-            throw new IllegalArgumentException("长度不是偶数");
+            hexString = "0" + hexString;
+            len = len + 1;
         }
         byte[] d = new byte[len / 2];
         for (int i = 0; i < len; i += 2) {
