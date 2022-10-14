@@ -5,6 +5,7 @@ import static com.liuhanze.iutil.lang.IString.EMPTY;
 import android.content.res.AssetManager;
 
 import com.liuhanze.iutil.IUtil;
+import com.liuhanze.iutil.file.IFile;
 import com.liuhanze.iutil.lang.IString;
 import com.liuhanze.iutil.log.ILog;
 
@@ -14,33 +15,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public final class IResource {
-    /**
-     * 换行符
-     */
-    private static final String LINE_BREAK = "\r\n";
-
-    /**
-     * 获取Assets下文件的内容
-     *
-     * @param fileName 文件名
-     * @return
-     */
-    public static String getFileFromAssets(String fileName) {
-        return getFileFromAssets(fileName, true);
-    }
 
     /**
      * 获取Assets下文件的内容
      *
      * @param fileName      文件名
-     * @param isNeedAddLine 是否需要换行
      * @return
      */
-    public static String getFileFromAssets(String fileName, boolean isNeedAddLine) {
+    public static String getFileFromAssets(String fileName) {
         if (IString.isEmpty(fileName)) {
             return EMPTY;
         }
-        return readInputStream(openAssetsFile(fileName), isNeedAddLine);
+        return IFile.readInputStream(openAssetsFile(fileName));
     }
 
     /**
@@ -79,41 +65,7 @@ public final class IResource {
         return getAssetManager().open(fileName);
     }
 
-    /**
-     * 读取输入流
-     *
-     * @param inputStream   输入流
-     * @param isNeedAddLine 是否需要换行
-     * @return
-     */
-    public static String readInputStream(InputStream inputStream, boolean isNeedAddLine) {
-        StringBuilder s = new StringBuilder(EMPTY);
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            if (isNeedAddLine) {
-                while ((line = br.readLine()) != null) {
-                    s.append(line).append(LINE_BREAK);
-                }
-            } else {
-                while ((line = br.readLine()) != null) {
-                    s.append(line);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            ILog.LogError(e.toString());
-        } finally {
-            try {
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                ILog.LogError(e.toString());
-            }
-        }
-        return s.toString();
-    }
+
 
 
 }

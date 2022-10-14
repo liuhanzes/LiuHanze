@@ -32,42 +32,41 @@ public final class ISharedPreferences {
     /**
      * 得到保存数据的方法，我们根据默认值得到保存的数据的具体类型，然后调用相对于的方法获取值
      * @param key
-     * @param defaultObject
+     * @param defaultValue
      * @return
      */
-    public static Object get(String key, Object defaultObject,SharedPreferences sp) {
+    public static <T extends Object> T get(String key, T defaultValue,SharedPreferences sp) {
         try {
-
             if(sp == null) sp = getDefaultSharedPreferences();
 
-            if (defaultObject instanceof String) {
-                return sp.getString(key, (String) defaultObject);
-            } else if (defaultObject instanceof Integer) {
-                return sp.getInt(key, (Integer) defaultObject);
-            } else if (defaultObject instanceof Boolean) {
-                return sp.getBoolean(key, (Boolean) defaultObject);
-            } else if (defaultObject instanceof Float) {
-                return sp.getFloat(key, (Float) defaultObject);
-            } else if (defaultObject instanceof Long) {
-                return sp.getLong(key, (Long) defaultObject);
+            if (defaultValue instanceof String) {
+                return (T) sp.getString(key, (String) defaultValue);
+            } else if (defaultValue instanceof Integer) {
+                return (T)((Object)sp.getInt(key, (Integer) defaultValue));
+            } else if (defaultValue instanceof Boolean) {
+                return  (T)((Object)sp.getBoolean(key, (Boolean) defaultValue));
+            } else if (defaultValue instanceof Float) {
+                return  (T)((Object)sp.getFloat(key, (Float) defaultValue));
+            } else if (defaultValue instanceof Long) {
+                return (T) ((Object)sp.getLong(key, (Long) defaultValue));
             }else {
                 throw new IllegalArgumentException("not support type get from Preferences ");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return defaultObject;
+        return defaultValue;
     }
 
     /**
      * 获取保存的参数
      * 目前只支持获取 String , Integer , Boolean , Float,Long类型
      * @param key
-     * @param defaultObject
+     * @param defaultValue
      * @return
      */
-    public static Object get(String key, Object defaultObject) {
-        return get(key,defaultObject,null);
+    public static <T> T get(String key, T defaultValue) {
+        return get(key,defaultValue,null);
     }
 
     /**
