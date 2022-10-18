@@ -21,7 +21,7 @@ public final class IUtil {
 
     public static Context getContext(){
         if (mContext == null) {
-            throw new ExceptionInInitializerError("context is null , must use AXUtil.init() first！");
+            throw new ExceptionInInitializerError("context is null , must use IUtil.init() first！");
         }
         return mContext;
     }

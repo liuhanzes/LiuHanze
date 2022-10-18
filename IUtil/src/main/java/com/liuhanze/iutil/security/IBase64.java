@@ -52,7 +52,7 @@ public final class IBase64 {
      * @param str the str
      * @return the string
      */
-    public static String decode(String str) {
+    public static byte[] decode(String str) {
         return decode(str, UTF_8.name());
     }
 
@@ -144,7 +144,7 @@ public final class IBase64 {
      * @param charsetName the charset name
      * @return the string
      */
-    public static String decode(String str, String charsetName) {
+    public static byte[] decode(String str, String charsetName) {
         byte[] data = null;
         try {
             data = str.getBytes(charsetName);
@@ -217,12 +217,7 @@ public final class IBase64 {
             buf.write(((b3 & 0x03) << 6) | b4);
         }
 
-        try {
-            return buf.toString(charsetName);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return buf.toByteArray();
     }
 
     public static byte[] decodeCertificateKey(String str) {
