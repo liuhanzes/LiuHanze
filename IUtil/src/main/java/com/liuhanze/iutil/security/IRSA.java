@@ -17,6 +17,10 @@ import javax.crypto.Cipher;
 public final class IRSA {
 
     private static String RSA = "RSA";
+
+    private IRSA(){
+
+    }
     /**
      * 从文件中输入流中加载公钥
      *

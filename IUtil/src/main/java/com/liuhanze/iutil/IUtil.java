@@ -19,6 +19,10 @@ public final class IUtil {
         mContext = application;
     }
 
+    private IUtil(){
+
+    }
+
     public static Context getContext(){
         if (mContext == null) {
             throw new ExceptionInInitializerError("context is null , must use IUtil.init() first！");

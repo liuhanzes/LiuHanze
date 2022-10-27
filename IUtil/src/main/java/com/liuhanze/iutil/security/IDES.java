@@ -12,6 +12,10 @@ import javax.crypto.spec.SecretKeySpec;
 
 public final class IDES {
 
+    private IDES(){
+
+    }
+
     private static byte[] base64Encode(final byte[] input) {
         return Base64.encode(input, Base64.NO_WRAP);
     }

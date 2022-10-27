@@ -25,6 +25,10 @@ import java.util.regex.Pattern;
 
 public final class INetWork {
 
+    private INetWork(){
+
+    }
+
     /**
      * 获取获取连接管理者ConnectivityManager
      *

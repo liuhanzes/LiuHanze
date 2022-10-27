@@ -6,11 +6,15 @@ import android.preference.PreferenceManager;
 
 import com.google.gson.Gson;
 import com.liuhanze.iutil.IUtil;
+import com.liuhanze.iutil.file.IFile;
 import com.liuhanze.iutil.lang.IString;
 
 import java.util.Map;
 
 public final class ISharedPreferences {
+
+    private ISharedPreferences(){
+    }
 
     /**
      * 获取默认SharedPreferences实例

@@ -8,6 +8,11 @@ import java.util.regex.Pattern;
 public final class IString {
 
     public final static String EMPTY = "";
+
+    private IString(){
+
+    }
+
     /**
      * 判断字符串是否为 null 或长度为 0
      *

@@ -76,6 +76,10 @@ public final class IDate {
      */
     private static final int MINUTE_S = 60;
 
+    private IDate(){
+
+    }
+
     /**
      * yyyy-MM-dd
      */

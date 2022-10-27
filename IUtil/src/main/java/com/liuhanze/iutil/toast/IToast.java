@@ -13,6 +13,10 @@ public final class IToast {
 
     private static Toast sToast = null;
 
+    private IToast(){
+
+    }
+
     public static void longToast(final String text){
         toast(text,Toast.LENGTH_LONG);
     }

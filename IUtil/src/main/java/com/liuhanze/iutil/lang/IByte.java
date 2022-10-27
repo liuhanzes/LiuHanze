@@ -6,6 +6,10 @@ public final class IByte {
 
     private static final char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
 
+    private IByte(){
+
+    }
+
     public static String byte2HexString(byte byte1) {
         return bytes2HexString(new byte[]{byte1});
     }

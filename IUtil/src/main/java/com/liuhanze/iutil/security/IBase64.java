@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 public final class IBase64 {
+
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     /**

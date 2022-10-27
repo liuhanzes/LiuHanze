@@ -6,6 +6,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public final class ISHA {
+
+    private ISHA(){
+
+    }
+
     /**
      * SHA1 加密
      *

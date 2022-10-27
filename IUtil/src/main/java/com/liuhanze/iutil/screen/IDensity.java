@@ -7,6 +7,10 @@ import com.liuhanze.iutil.IUtil;
 
 public final class IDensity {
 
+    private IDensity(){
+
+    }
+
     /**
      * 获取屏幕密度
      *

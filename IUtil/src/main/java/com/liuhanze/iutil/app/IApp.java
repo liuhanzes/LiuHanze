@@ -15,6 +15,10 @@ import java.util.List;
 
 public final class IApp {
 
+    private IApp(){
+
+    }
+
     public static PackageManager getPackageManager() {
         return IUtil.getContext().getPackageManager();
     }

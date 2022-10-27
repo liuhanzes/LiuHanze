@@ -14,6 +14,10 @@ public final class ILog {
      */
     private static final int MAX_LOG_LENGTH = 2000;
 
+    private ILog(){
+
+    }
+
     public static void debug(boolean debug){
         isDebug = debug;
     }

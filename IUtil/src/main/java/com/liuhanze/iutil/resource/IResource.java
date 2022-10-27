@@ -3,6 +3,7 @@ package com.liuhanze.iutil.resource;
 import static com.liuhanze.iutil.lang.IString.EMPTY;
 
 import android.content.res.AssetManager;
+import android.graphics.drawable.Drawable;
 
 import com.liuhanze.iutil.IUtil;
 import com.liuhanze.iutil.file.IFile;
@@ -15,6 +16,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public final class IResource {
+
+    private IResource(){}
 
     /**
      * 获取Assets下文件的内容
@@ -64,8 +67,6 @@ public final class IResource {
     public static InputStream openAssetsFileWithException(String fileName) throws IOException {
         return getAssetManager().open(fileName);
     }
-
-
 
 
 }
