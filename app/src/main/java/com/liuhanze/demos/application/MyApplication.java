@@ -12,6 +12,6 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         IUtil.init(this);
-        ILog.debug(BuildConfig.DEBUG);
+        ILog.isDebug(BuildConfig.DEBUG);
     }
 }

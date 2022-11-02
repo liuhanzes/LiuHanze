@@ -18,7 +18,7 @@ public final class ILog {
 
     }
 
-    public static void debug(boolean debug){
+    public static void isDebug(boolean debug){
         isDebug = debug;
     }
 
