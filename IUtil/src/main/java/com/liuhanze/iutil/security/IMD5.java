@@ -9,7 +9,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class IMD5 {
+public final class IMD5 {
 
     private static final String MD5 = "MD5";
 
