@@ -17,7 +17,9 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
@@ -227,6 +229,17 @@ public final class IX509 {
         return getSslSocketFactory(getKeyStoreHasCert(inputStreams),true);
     }
 
+    /**
+     * Hostname Verifier
+     */
+    public static HostnameVerifier getHostnameVerifier() {
+        return new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return hostname.equalsIgnoreCase(session.getPeerHost());
+            }
+        };
+    }
 
     /**
      * 添加证书到keyStore
