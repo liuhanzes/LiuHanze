@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Base64InputStream;
 import android.view.View;
 import android.view.Window;
@@ -51,7 +52,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.RSAKeyGenParameterSpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 import java.util.HashMap;
 
 import javax.crypto.BadPaddingException;
@@ -74,11 +74,24 @@ public class MainActivity extends Activity {
             //test1();
            // test4();
            // test3();
+            test5();
 
         } catch (Exception e) {
             e.printStackTrace();
             ILog.LogDebug("rsa加密失败...");
         }
+    }
+
+    private void test5(){
+        String key = "11111111111111112222222222222222";
+        String data = "6DC1B51373A8EFD92C38647C92BF1A9D"; //D31BA2A154537297F357D6CB0C19045A
+        String DES_PADDING = "DESede/ECB/NoPadding";
+        //String DES_PADDING = "DES/ECB/NoPadding";
+        String code = IDES.encrypt3DES2HexString(IByte.hexStringToBytes(data), IByte.hexStringToBytes(key),DES_PADDING,null);
+
+        ILog.LogDebug("加密 code = "+code);
+        String uncode = IDES.decrypt3DES2HexString(IByte.hexStringToBytes(code),IByte.hexStringToBytes(key),DES_PADDING,null);
+        ILog.LogDebug("解密 code = "+uncode);
     }
 
     public void test3(){

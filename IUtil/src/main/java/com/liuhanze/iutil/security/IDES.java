@@ -26,9 +26,11 @@ public final class IDES {
 
     /**
      * DES 转变
-     * <p>法算法名称/加密模式/填充方式</p>
+     * <p>法算法名称/加密模式/填充方式</p> DES
      * <p>加密模式有：电子密码本模式 ECB、加密块链模式 CBC、加密反馈模式 CFB、输出反馈模式 OFB</p>
-     * <p>填充方式有：NoPadding、ZerosPadding、PKCS5Padding</p>
+     * <p>transformation 填充方式有： NoPadding、ZerosPadding、PKCS5Padding</p>
+     *
+     * 例如：DES/ECB/NoPadding
      */
     private static final String DES_Algorithm = "DES";
 
@@ -37,7 +39,7 @@ public final class IDES {
      *
      * @param data           明文
      * @param key            8 字节秘钥
-     * @param transformation 转变
+     * @param transformation  填充方式 例如：DES/ECB/NoPadding
      * @param iv             初始化向量
      * @return Base64 密文
      */
@@ -53,7 +55,7 @@ public final class IDES {
      *
      * @param data           明文
      * @param key            8 字节秘钥
-     * @param transformation 转变
+     * @param transformation 填充方式 例如：DES/ECB/NoPadding
      * @param iv             初始化向量
      * @return 16 进制密文
      */
@@ -69,7 +71,7 @@ public final class IDES {
      *
      * @param data           明文
      * @param key            8 字节秘钥
-     * @param transformation 转变
+     * @param transformation 填充方式 例如：DES/ECB/NoPadding
      * @param iv             初始化向量
      * @return 密文
      */
@@ -85,7 +87,7 @@ public final class IDES {
      *
      * @param data           Base64 编码密文
      * @param key            8 字节秘钥
-     * @param transformation 转变
+     * @param transformation 填充方式 例如：DES/ECB/NoPadding
      * @param iv             初始化向量
      * @return 明文
      */
@@ -101,7 +103,7 @@ public final class IDES {
      *
      * @param data           16 进制密文
      * @param key            8 字节秘钥
-     * @param transformation 转变
+     * @param transformation 填充方式 例如：DES/ECB/NoPadding
      * @param iv             初始化向量
      * @return 明文
      */
@@ -117,7 +119,7 @@ public final class IDES {
      *
      * @param data           密文
      * @param key            8 字节秘钥
-     * @param transformation 转变
+     * @param transformation 填充方式 例如：DES/ECB/NoPadding
      * @param iv             初始化向量
      * @return 明文
      */
@@ -134,9 +136,11 @@ public final class IDES {
 
     /**
      * 3DES 转变
-     * <p>法算法名称/加密模式/填充方式</p>
+     * <p>法算法名称/加密模式/填充方式</p> DESede
      * <p>加密模式有：电子密码本模式 ECB、加密块链模式 CBC、加密反馈模式 CFB、输出反馈模式 OFB</p>
      * <p>填充方式有：NoPadding、ZerosPadding、PKCS5Padding</p>
+     *
+     * 例：DESede/ECB/NoPadding
      */
     private static final String TripleDES_Algorithm = "DESede";
 
@@ -146,7 +150,7 @@ public final class IDES {
      *
      * @param data           明文
      * @param key            24 字节秘钥
-     * @param transformation 转变
+     * @param transformation 填充方式 例如：DESede/ECB/NoPadding
      * @param iv             初始化向量
      * @return Base64 密文
      */
@@ -162,7 +166,7 @@ public final class IDES {
      *
      * @param data           明文
      * @param key            24 字节秘钥
-     * @param transformation 转变
+     * @param transformation  填充方式 例如：DESede/ECB/NoPadding
      * @param iv             初始化向量
      * @return 16 进制密文
      */
@@ -177,8 +181,8 @@ public final class IDES {
      * 3DES 加密
      *
      * @param data           明文
-     * @param key            24 字节密钥
-     * @param transformation 转变
+     * @param key            16字节/24字节 密钥
+     * @param transformation  填充方式 例如：DESede/ECB/NoPadding
      * @param iv             初始化向量
      * @return 密文
      */
@@ -186,7 +190,23 @@ public final class IDES {
                                      final byte[] key,
                                      final String transformation,
                                      final byte[] iv) {
-        return desTemplate(data, key, TripleDES_Algorithm, transformation, iv, true);
+        byte[] mKey = null;
+
+
+        if(key != null && key.length == 16){
+            mKey = new byte[24];
+           System.arraycopy(key,0,mKey,0,8);
+           System.arraycopy(key,8,mKey,8,8);
+           System.arraycopy(key,0,mKey,16,8);
+
+        }else if(key != null && key.length == 24){
+            mKey = new byte[24];
+            System.arraycopy(key,0,mKey,0,8);
+            System.arraycopy(key,8,mKey,8,8);
+            System.arraycopy(key,16,mKey,16,8);
+        }
+
+        return desTemplate(data, mKey, TripleDES_Algorithm, transformation, iv, true);
     }
 
     /**
@@ -194,7 +214,7 @@ public final class IDES {
      *
      * @param data           Base64 编码密文
      * @param key            24 字节秘钥
-     * @param transformation 转变
+     * @param transformation  填充方式 例如：DESede/ECB/NoPadding
      * @param iv             初始化向量
      * @return 明文
      */
@@ -210,7 +230,7 @@ public final class IDES {
      *
      * @param data           16 进制密文
      * @param key            24 字节秘钥
-     * @param transformation 转变
+     * @param transformation  填充方式 例如：DESede/ECB/NoPadding
      * @param iv             初始化向量
      * @return 明文
      */
@@ -225,8 +245,24 @@ public final class IDES {
      * 3DES 解密
      *
      * @param data           密文
-     * @param key            24 字节密钥
-     * @param transformation 转变
+     * @param key            16字节/24字节 密钥
+     * @param transformation  填充方式 例如：DESede/ECB/NoPadding
+     * @param iv             初始化向量
+     * @return 明文
+     */
+    public static String decrypt3DES2HexString(final byte[] data,
+                                               final byte[] key,
+                                               final String transformation,
+                                               final byte[] iv) {
+        return IByte.bytes2HexString(decrypt3DES(data, key, transformation, iv));
+    }
+
+    /**
+     * 3DES 解密
+     *
+     * @param data           密文
+     * @param key            16字节/24字节 密钥
+     * @param transformation  填充方式 例如：DESede/ECB/NoPadding
      * @param iv             初始化向量
      * @return 明文
      */
@@ -234,7 +270,22 @@ public final class IDES {
                                      final byte[] key,
                                      final String transformation,
                                      final byte[] iv) {
-        return desTemplate(data, key, TripleDES_Algorithm, transformation, iv, false);
+
+        byte[] mKey = null;
+        if(key != null && key.length == 16){
+            mKey = new byte[24];
+            System.arraycopy(key,0,mKey,0,8);
+            System.arraycopy(key,8,mKey,8,8);
+            System.arraycopy(key,0,mKey,16,8);
+
+        }else if(key != null && key.length == 24){
+            mKey = new byte[24];
+            System.arraycopy(key,0,mKey,0,8);
+            System.arraycopy(key,8,mKey,8,8);
+            System.arraycopy(key,16,mKey,16,8);
+        }
+
+        return desTemplate(data, mKey, TripleDES_Algorithm, transformation, iv, false);
     }
 
     /**
@@ -243,7 +294,7 @@ public final class IDES {
      * @param data           数据
      * @param key            秘钥
      * @param algorithm      加密算法
-     * @param transformation 转变
+     * @param transformation  填充方式 例如：DESede/ECB/NoPadding
      * @param isEncrypt      {@code true}: 加密 {@code false}: 解密
      * @return 密文或者明文，适用于 DES，3DES，AES
      */
