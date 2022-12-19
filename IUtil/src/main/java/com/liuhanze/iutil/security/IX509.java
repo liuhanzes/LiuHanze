@@ -102,6 +102,11 @@ public final class IX509 {
 
     /**
      * 根据inputStream 获取一个证书
+     *
+     * example:string to inputStream
+     * String cert;
+     * InputStream cerInputStream = new ByteArrayInputStream(cert.getBytes());
+     *
      * @param in
      * @return
      */
@@ -182,7 +187,8 @@ public final class IX509 {
 
     /**
      * 传入 keyStore 获取SslSocketFactory和TrustManager
-     * @param keyStore
+     * @param keyStore 存储证书得keyStore
+     * @param checkCert 是否校验证书
      * @return
      */
     public static SSLParams getSslSocketFactory(KeyStore keyStore,boolean checkCert){
@@ -223,6 +229,11 @@ public final class IX509 {
     /**
      * 校验证书的SSLSocFactory
      * @param inputStreams 证书输入流
+     *
+     * example:string to inputStream
+     * String cert;
+     * InputStream cerInputStream = new ByteArrayInputStream(cert.getBytes());
+     *
      * @return
      */
     public static SSLParams getSocFactoryCheckCert(InputStream ... inputStreams){
@@ -328,11 +339,8 @@ public final class IX509 {
 
         @Override
         public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-            try {
-                if(x509TrustManager != null)
-                    x509TrustManager.checkServerTrusted(chain, authType);
-            } catch (CertificateException ce) {
-                throw new CertificateException(ce);
+            if(x509TrustManager != null){
+                x509TrustManager.checkServerTrusted(chain, authType);
             }
         }
 
