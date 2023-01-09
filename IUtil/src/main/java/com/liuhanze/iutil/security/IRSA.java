@@ -18,6 +18,8 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPrivateCrtKeySpec;
+import java.security.spec.RSAPrivateKeySpec;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -25,7 +27,9 @@ import javax.crypto.Cipher;
 
 public final class IRSA {
 
-    private static String RSA = "RSA";
+    public static String RSA = "RSA";
+    public static String RSA_PKCS1_PADDING = "RSA/NONE/PKCS1Padding";
+    public static String RSA_NO_PADDING = "RSA/NONE/NoPadding";
 
     private IRSA(){
 
@@ -36,9 +40,9 @@ public final class IRSA {
      *
      * @return
      */
-    public static KeyPair generateRSAKeyPair()
+    public static KeyPair generateRSAKeyPair(String algorithm)
     {
-        return generateRSAKeyPair(1024);
+        return generateRSAKeyPair(1024,algorithm);
     }
 
     /**
@@ -49,11 +53,11 @@ public final class IRSA {
      *            一般1024
      * @return
      */
-    public static KeyPair generateRSAKeyPair(int keyLength)
+    public static KeyPair generateRSAKeyPair(int keyLength,String algorithm)
     {
         try
         {
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance(RSA);
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance(algorithm);
             kpg.initialize(keyLength);
             return kpg.genKeyPair();
         } catch (NoSuchAlgorithmException e)
@@ -71,11 +75,11 @@ public final class IRSA {
      * @throws Exception
      *             加载公钥时产生的异常
      */
-    public static PublicKey loadPublicKey(InputStream in) throws Exception
+    public static PublicKey loadPublicKey(InputStream in,String algorithm) throws Exception
     {
         try
         {
-            return loadPublicKey(IFile.readCertificateKeyInputStream(in));
+            return loadPublicKey(IFile.readCertificateKeyInputStream(in),algorithm);
         } catch (IOException e)
         {
             throw new Exception("func loadPublicKey(InputStream in) public key read inputStream failed");
@@ -93,12 +97,12 @@ public final class IRSA {
      * @throws Exception
      *             加载公钥时产生的异常
      */
-    public static PublicKey loadPublicKey(String publicKeyStr) throws Exception
+    public static PublicKey loadPublicKey(String publicKeyStr,String algorithm) throws Exception
     {
         try
         {
             byte[] buffer = IBase64.decodeCertificateKey(publicKeyStr);
-            KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+            KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
             return (RSAPublicKey) keyFactory.generatePublic(keySpec);
         } catch (NoSuchAlgorithmException e)
@@ -149,11 +153,11 @@ public final class IRSA {
      *            私钥
      * @return
      */
-    public static byte[] decryptData(byte[] encryptedData, PrivateKey privateKey)
+    public static byte[] decryptData(byte[] encryptedData, PrivateKey privateKey,String algorithm)
     {
         try
         {
-            Cipher cipher = Cipher.getInstance(RSA);
+            Cipher cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             return cipher.doFinal(encryptedData);
         } catch (Exception e)
@@ -170,48 +174,73 @@ public final class IRSA {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public static PublicKey getPublicKey(byte[] keyBytes) throws NoSuchAlgorithmException,
+    public static PublicKey getPublicKey(byte[] keyBytes,String algorithm) throws NoSuchAlgorithmException,
             InvalidKeySpecException
     {
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+        KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
         PublicKey publicKey = keyFactory.generatePublic(keySpec);
         return publicKey;
     }
 
     /**
-     * 通过私钥byte[]将公钥还原，适用于RSA算法
+     * 通过私钥byte[]将私钥还原，适用于RSA算法
      *
      * @param keyBytes
      * @return
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public static PrivateKey getPrivateKey(byte[] keyBytes) throws NoSuchAlgorithmException,
+    public static PrivateKey getPrivateKey(byte[] keyBytes,String algorithm) throws NoSuchAlgorithmException,
             InvalidKeySpecException
     {
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
-        KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+        KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
         PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
         return privateKey;
     }
 
     /**
-     * 使用N、e值还原公钥
+     * 使用参数值还原私钥
      *
-     * @param modulus
-     * @param publicExponent
      * @return
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public static PublicKey getPublicKey(String modulus, String publicExponent)
+    public static PrivateKey getPrivateKey(String algorithm,String n, String e,String d,String p,String q,String dp,String dq,String iqmp)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-        BigInteger bigIntModulus = new BigInteger(modulus);
-        BigInteger bigIntPrivateExponent = new BigInteger(publicExponent);
-        RSAPublicKeySpec keySpec = new RSAPublicKeySpec(bigIntModulus, bigIntPrivateExponent);
-        KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+
+        BigInteger modulus = new BigInteger(n,16);
+        BigInteger publicExponent = new BigInteger(e,16);
+        BigInteger privateExponent = new BigInteger(d,16);
+        BigInteger primeP = new BigInteger(p,16);
+        BigInteger primeQ = new BigInteger(q,16);
+        BigInteger exponentDp = new BigInteger(dp,16);
+        BigInteger exponentDq = new BigInteger(dq,16);
+        BigInteger coefficient = new BigInteger(iqmp,16);
+
+        RSAPrivateCrtKeySpec keySpec = new RSAPrivateCrtKeySpec(modulus,publicExponent,privateExponent,primeP,primeQ,exponentDp,exponentDq,coefficient);
+        KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
+        PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
+        return privateKey;
+    }
+
+
+    /**
+     * 使用N、e值还原公钥
+     *
+     * @param modulus
+     * @param exponent
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
+    public static PublicKey getPublicKey(BigInteger modulus, BigInteger exponent,String algorithm)
+            throws NoSuchAlgorithmException, InvalidKeySpecException
+    {
+        RSAPublicKeySpec keySpec = new RSAPublicKeySpec(modulus, exponent);
+        KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
         PublicKey publicKey = keyFactory.generatePublic(keySpec);
         return publicKey;
     }
@@ -220,19 +249,15 @@ public final class IRSA {
      * 使用N、d值还原私钥
      *
      * @param modulus
-     * @param privateExponent
      * @return
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeySpecException
      */
-    public static PrivateKey getPrivateKey(String modulus, String privateExponent)
+    public static PrivateKey getPrivateKey(BigInteger modulus, BigInteger exponent,String algorithm)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {
-
-        BigInteger bigIntModulus = new BigInteger(modulus);
-        BigInteger bigIntPrivateExponent = new BigInteger(privateExponent);
-        RSAPublicKeySpec keySpec = new RSAPublicKeySpec(bigIntModulus, bigIntPrivateExponent);
-        KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+        RSAPrivateKeySpec keySpec = new RSAPrivateKeySpec(modulus, exponent);
+        KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
         PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
         return privateKey;
     }
@@ -246,14 +271,14 @@ public final class IRSA {
      * @return
      * @throws Exception
      */
-    public static PrivateKey loadPrivateKey(String privateKeyStr) throws Exception
+    public static PrivateKey loadPrivateKey(String privateKeyStr,String algorithm) throws Exception
     {
         try
         {
             byte[] buffer = IBase64.decodeCertificateKey(privateKeyStr);
             // X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(buffer);
-            KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+            KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
             return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
         } catch (NoSuchAlgorithmException e)
         {
@@ -275,11 +300,11 @@ public final class IRSA {
      * @return 是否成功
      * @throws Exception
      */
-    public static PrivateKey loadPrivateKey(InputStream in) throws Exception
+    public static PrivateKey loadPrivateKey(InputStream in,String algorithm) throws Exception
     {
         try
         {
-            return loadPrivateKey(readKey(in));
+            return loadPrivateKey(readKey(in),algorithm);
         } catch (IOException e)
         {
             throw new Exception("私钥数据读取错误");
