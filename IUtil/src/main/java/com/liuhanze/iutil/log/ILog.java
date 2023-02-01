@@ -63,7 +63,7 @@ public final class ILog {
     }
 
     private static void log(int type,@NonNull String tag,@NonNull String text){
-        if(isDebug){
+        if(isDebug || type == Log.ERROR || Log.WARN == type){
             int strLength = text.length();
             int start = 0;
             int end = MAX_LOG_LENGTH;
