@@ -14,10 +14,4 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="activityTheme" parent="Widget.MaterialComponents.MaterialCalendar.Fullscreen">
-        <item name="android:windowFullscreen">true</item>
-
-    </style>
-
-
 </resources>

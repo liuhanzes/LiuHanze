@@ -21,10 +21,12 @@ import com.liuhanze.iutil.lang.IString;
 import com.liuhanze.iutil.log.ILog;
 import com.liuhanze.iutil.net.INetWork;
 import com.liuhanze.iutil.resource.IResource;
+import com.liuhanze.iutil.security.IAES;
 import com.liuhanze.iutil.security.IBase64;
 import com.liuhanze.iutil.security.IDES;
 import com.liuhanze.iutil.security.IRSA;
 import com.liuhanze.iutil.security.ISHA;
+import com.liuhanze.iutil.security.ISM4;
 import com.liuhanze.iutil.toast.IToast;
 
 import java.io.BufferedInputStream;
@@ -74,23 +76,54 @@ public class MainActivity extends Activity {
             //test1();
            // test4();
            // test3();
-            test5();
-
+           // test5();
+           // test6();
+            test7();
         } catch (Exception e) {
             e.printStackTrace();
             ILog.LogDebug("rsa加密失败...");
         }
     }
 
+    private void test7(){
+        String value = "D7B32A65441130FE3CDEEDEB47AB820D";
+        String mask = "00000000000000000000000000000000";
+        byte[] maskEncode = ISM4.encrypt(IByte.hexStringToBytes(mask),IByte.hexStringToBytes(value),"SM4/ECB/NoPadding",null);
+        ILog.LogDebug("mask encode = "+IByte.bytes2HexString(maskEncode));
+    }
+
+    private void test6(){
+        String key = "C9C175D6E0F66FDA38A594DB7A044FBC";
+        String data = "wud2UIuRrtJE+XMtq3ulUA==";
+        String kcv = "nqEEDzdTn8g=";
+        String mask = "00000000000000000000000000000000";
+
+        byte[] dataD = IAES.decrypt(IBase64.decode(data),IByte.hexStringToBytes(key),"AES/ECB/NoPadding",null);
+
+        ILog.LogDebug("data decode = "+IByte.bytes2HexString(dataD));
+
+        byte[] code = IAES.encrypt(dataD,IByte.hexStringToBytes(key),"AES/ECB/NoPadding",null);
+        String codeB = IBase64.encode(code);
+        ILog.LogDebug("codeB = "+codeB);
+
+        byte[] maskEncode = IAES.encrypt(IByte.hexStringToBytes(mask),dataD,"AES/ECB/NoPadding",null);
+        ILog.LogDebug("maskEncode = "+IByte.bytes2HexString(maskEncode));
+
+        ILog.LogDebug("kcv decode = "+IByte.bytes2HexString(IBase64.decode(kcv)));
+
+
+    }
+
     private void test5(){
-        String key = "11111111111111112222222222222222";
+        String key = "A7910B1920AEC761F76E756857923EB5BC6B9B16E3516479";
+        String dataB = "YBFcrgW34rU3fYppQdbf5g==";
         String data = "6DC1B51373A8EFD92C38647C92BF1A9D"; //D31BA2A154537297F357D6CB0C19045A
         String DES_PADDING = "DESede/ECB/NoPadding";
         //String DES_PADDING = "DES/ECB/NoPadding";
-        String code = IDES.encrypt3DES2HexString(IByte.hexStringToBytes(data), IByte.hexStringToBytes(key),DES_PADDING,null);
+      //  String code = IDES.encrypt3DES2HexString(IByte.hexStringToBytes(data), IByte.hexStringToBytes(key),DES_PADDING,null);
 
-        ILog.LogDebug("加密 code = "+code);
-        String uncode = IDES.decrypt3DES2HexString(IByte.hexStringToBytes(code),IByte.hexStringToBytes(key),DES_PADDING,null);
+        //ILog.LogDebug("加密 code = "+code);
+        String uncode = IDES.decrypt3DES2HexString(IBase64.decode(dataB),IByte.hexStringToBytes(key),DES_PADDING,null);
         ILog.LogDebug("解密 code = "+uncode);
     }
 
@@ -168,7 +201,7 @@ public class MainActivity extends Activity {
         IBase64.decode(IResource.getFileFromAssets("Newpos_pubkey.pem"),"US-ASCII");
 
         try {
-            PublicKey publicKey = IRSA.loadPublicKey(publicKeyIn);
+            PublicKey publicKey = IRSA.loadPublicKey(publicKeyIn,IRSA.RSA);
             HashMap<String,String> map = new HashMap<>();
             map.put("k1","value1");
             map.put("k2","value2");
