@@ -81,7 +81,6 @@ public class MainActivity extends Activity {
             test7();
         } catch (Exception e) {
             e.printStackTrace();
-            ILog.LogDebug("rsa加密失败...");
         }
     }
 

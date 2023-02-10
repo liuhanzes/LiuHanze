@@ -162,6 +162,7 @@ public final class IRSA {
             return cipher.doFinal(encryptedData);
         } catch (Exception e)
         {
+            e.printStackTrace();
             return null;
         }
     }

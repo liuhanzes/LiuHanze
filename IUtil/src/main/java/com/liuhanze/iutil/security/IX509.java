@@ -1,19 +1,28 @@
 package com.liuhanze.iutil.security;
 
 import android.annotation.SuppressLint;
+import android.util.Base64;
 
 import com.liuhanze.iutil.lang.IString;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.cert.CRLException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 
@@ -34,6 +43,7 @@ public final class IX509 {
 
     }
 
+    public final static String X509 = "X.509";
 
     /**
      * 根据给定的type获取keystore实例,如果InputStream,password不为空,
@@ -91,7 +101,7 @@ public final class IX509 {
 
         Collection<? extends Certificate> certificates = null;
         try {
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509);
             certificates = certificateFactory.generateCertificates(in);
         } catch (CertificateException e) {
             e.printStackTrace();
@@ -113,7 +123,7 @@ public final class IX509 {
     public static Certificate getCertificate(InputStream in){
         Certificate certificate = null;
         try {
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509);
             certificate = certificateFactory.generateCertificate(in);
         } catch (CertificateException e) {
             e.printStackTrace();
@@ -131,7 +141,7 @@ public final class IX509 {
         Certificate certificate = null;
         try {
             InputStream cerInputStream = new ByteArrayInputStream(bytes);
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509);
             certificate = certificateFactory.generateCertificate(cerInputStream);
         } catch (CertificateException e) {
             e.printStackTrace();
@@ -139,6 +149,179 @@ public final class IX509 {
             return certificate;
         }
     }
+
+    /**
+     * 签验，返回签验是否通过
+     * @param certificate   证书
+     * @param signStr       签名的字符串
+     * @param unSignStr     原字符串
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws SignatureException
+     */
+    public static boolean verifySign(X509Certificate certificate, String signStr, String unSignStr) {
+        try {
+            byte[] data = Base64.decode(signStr, Base64.DEFAULT);
+            Signature signature = Signature.getInstance(certificate.getSigAlgName());
+            signature.initVerify(certificate.getPublicKey());
+            signature.update(unSignStr.getBytes(StandardCharsets.UTF_8));
+            return signature.verify(data);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 验证根证书签名
+     * @param fileString 根证书内容
+     *                   格式：
+     *                   -----BEGIN CERTIFICATE-----\n"+caRoot+"\n-----END CERTIFICATE-----
+     * @return
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws SignatureException
+     */
+    public static boolean verifyRootCert(String fileString) {
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509);
+            InputStream inputStream = new ByteArrayInputStream(fileString.getBytes());
+            X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+            System.out.println(certificate);
+            Signature signature = Signature.getInstance(certificate.getSigAlgName());
+            signature.initVerify(certificate);
+            signature.update(certificate.getTBSCertificate());
+            return signature.verify(certificate.getSignature());
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 验证用户证书签名
+     * @param publicKeyRoot
+     * @param userCert
+     * @return
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws SignatureException
+     */
+    public static boolean verifyUserCert(PublicKey publicKeyRoot, String userCert){
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509);
+            InputStream inputStream = new ByteArrayInputStream(userCert.getBytes());
+            X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+            Signature signature = Signature.getInstance(certificate.getSigAlgName());
+            signature.initVerify(publicKeyRoot);
+            signature.update(certificate.getTBSCertificate());
+            return signature.verify(certificate.getSignature());
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     * 验证证书注销列表签名
+     * @param publicKeyRoot
+     * @param crlCert
+     * @return
+     * @throws CertificateException
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws SignatureException
+     * @throws CRLException
+     */
+    public static boolean verifyCrlCert(PublicKey publicKeyRoot,String crlCert){
+
+        try {
+            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509);
+            InputStream inputStream = new ByteArrayInputStream(crlCert.getBytes());
+            X509CRL certificate = (X509CRL) certificateFactory.generateCRL(inputStream);
+            Signature signature = Signature.getInstance(certificate.getSigAlgName());
+            signature.initVerify(publicKeyRoot);
+            signature.update(certificate.getTBSCertList());
+            return signature.verify(certificate.getSignature());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (CertificateException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (CRLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    /**
+     * 使用私钥对字符串进行签名,返回Base64编码后的字符串
+     *
+     * 一个私钥签名，公钥验签的例子
+     * KeyPair keyPair = getKeyPair();
+     *
+     *         byte[] data = "test".getBytes("UTF8");
+     *
+     *         Signature sig = Signature.getInstance("SHA1WithRSA");
+     *         sig.initSign(keyPair.getPrivate());
+     *         sig.update(data);
+     *         byte[] signatureBytes = sig.sign(); //使用私钥进行签名
+     *         System.out.println("Signature:" + new BASE64Encoder().encode(signatureBytes));
+     *
+     *         sig.initVerify(keyPair.getPublic());
+     *         sig.update(data);
+     *
+     *         System.out.println(sig.verify(signatureBytes));  //使用公钥进行验签
+     * @param str   原始字符串
+     * @param privateKey    私钥
+     * @param algorithm   签名算法 例如：SHA256withRSA
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws SignatureException
+     */
+    public static String signByPri(String str, PrivateKey privateKey, String algorithm){
+        try {
+            Signature signature = Signature.getInstance(algorithm);
+            signature.initSign(privateKey);
+            signature.update(str.getBytes(StandardCharsets.UTF_8));
+            byte[] data = signature.sign();
+            return Base64.encodeToString(data, Base64.DEFAULT);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (SignatureException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
     /**
      * 获取TrustManager[]

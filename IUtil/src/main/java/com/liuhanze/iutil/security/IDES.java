@@ -4,9 +4,17 @@ import android.util.Base64;
 
 import com.liuhanze.iutil.lang.IByte;
 
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -33,6 +41,31 @@ public final class IDES {
      * 例如：DES/ECB/NoPadding
      */
     private static final String DES_Algorithm = "DES";
+
+    /**
+     * 随机产生单倍长des密钥
+     * @return
+     */
+    public static String getRandomDesKey(){
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(DES_Algorithm);
+            keyGenerator.init(64);
+            SecretKey secretKey = keyGenerator.generateKey();
+            DESKeySpec deSedeKeySpec = new DESKeySpec(secretKey.getEncoded());
+            SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(DES_Algorithm);
+            Key key =  secretKeyFactory.generateSecret(deSedeKeySpec);
+            String keyData = IByte.bytes2HexString(key.getEncoded());
+            return  keyData;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        } catch (InvalidKeyException e) {
+            return null;
+        } catch (InvalidKeySpecException e) {
+            return null;
+        }
+
+    }
 
     /**
      * DES 加密后转为 Base64 编码
