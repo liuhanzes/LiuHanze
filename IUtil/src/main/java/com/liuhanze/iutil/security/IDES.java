@@ -3,6 +3,8 @@ package com.liuhanze.iutil.security;
 import android.util.Base64;
 
 import com.liuhanze.iutil.lang.IByte;
+import com.liuhanze.iutil.lang.IString;
+import com.liuhanze.iutil.log.ILog;
 
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -64,7 +66,29 @@ public final class IDES {
         } catch (InvalidKeySpecException e) {
             return null;
         }
+    }
 
+    /**
+     * 随机产生双倍长des密钥
+     * @return
+     */
+    public static String getRandomDoubleDesKey(){
+
+        String des1_rand = IDES.getRandomDesKey();
+        String des2_rand = IDES.getRandomDesKey();
+        return IString.concat(des1_rand,des2_rand);
+    }
+
+    /**
+     * 随机产生三倍长des密钥
+     * @return
+     */
+    public static String getRandomTDesKey(){
+
+        String des1_rand = IDES.getRandomDesKey();
+        String des2_rand = IDES.getRandomDesKey();
+        String des3_rand = IDES.getRandomDesKey();
+        return IString.concat(des1_rand,des2_rand,des3_rand);
     }
 
     /**
