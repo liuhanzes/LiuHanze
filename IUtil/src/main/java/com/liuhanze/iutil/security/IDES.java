@@ -74,8 +74,8 @@ public final class IDES {
      */
     public static String getRandomDoubleDesKey(){
 
-        String des1_rand = IDES.getRandomDesKey();
-        String des2_rand = IDES.getRandomDesKey();
+        String des1_rand = getRandomDesKey();
+        String des2_rand = getRandomDesKey();
         return IString.concat(des1_rand,des2_rand);
     }
 
@@ -85,9 +85,9 @@ public final class IDES {
      */
     public static String getRandomTDesKey(){
 
-        String des1_rand = IDES.getRandomDesKey();
-        String des2_rand = IDES.getRandomDesKey();
-        String des3_rand = IDES.getRandomDesKey();
+        String des1_rand = getRandomDesKey();
+        String des2_rand = getRandomDesKey();
+        String des3_rand = getRandomDesKey();
         return IString.concat(des1_rand,des2_rand,des3_rand);
     }
 
