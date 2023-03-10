@@ -3,6 +3,7 @@ package com.liuhanze.iutil.security;
 import android.annotation.SuppressLint;
 import android.util.Base64;
 
+import com.liuhanze.iutil.lang.IByte;
 import com.liuhanze.iutil.lang.IString;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +24,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509CRL;
+import java.security.cert.X509CRLEntry;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 
@@ -193,7 +195,6 @@ public final class IX509 {
             CertificateFactory certificateFactory = CertificateFactory.getInstance(X509);
             InputStream inputStream = new ByteArrayInputStream(fileString.getBytes());
             X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
-            System.out.println(certificate);
             Signature signature = Signature.getInstance(certificate.getSigAlgName());
             signature.initVerify(certificate);
             signature.update(certificate.getTBSCertificate());
@@ -240,6 +241,24 @@ public final class IX509 {
         }
 
         return false;
+    }
+
+    /**
+     * 获取证书序列号
+     * @param certificate
+     * @return
+     */
+    public static String getSerialNumber(X509Certificate certificate){
+        return IByte.byteArrayToHexString(certificate.getSerialNumber().toByteArray());
+    }
+
+    /**
+     * 获取证书序列号
+     * @param certificate
+     * @return
+     */
+    public static String getSerialNumber(X509CRLEntry certificate){
+        return IByte.byteArrayToHexString(certificate.getSerialNumber().toByteArray());
     }
 
     /**
