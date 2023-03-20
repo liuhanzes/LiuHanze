@@ -14,7 +14,7 @@ public final class ILog {
     /**
      * logcat 一条日志最大长度.
      */
-    private static final int MAX_LOG_LENGTH = 2000;
+    private static final int MAX_LOG_LENGTH = 500;
     /**
      * 日志打印等级，默认只打印向一层函数调用栈，最大可以打印3层
      */
@@ -33,7 +33,7 @@ public final class ILog {
      * @param level
      */
     public static void setStackTraceLevel(int level){
-        if(level > 3) level = 3;
+        if(level > MAX_STACK_TRACE_LEVEL) level = MAX_STACK_TRACE_LEVEL;
         if (level <= 0) level = 1;
 
         stackTraceLevel = level;
@@ -97,53 +97,79 @@ public final class ILog {
 
         if(isDebug || type == Log.ERROR || Log.WARN == type){
 
-            int endLineLen = 0;
-            //打印调用者className，和methodName
-            for(int i=0;i<Thread.currentThread().getStackTrace().length;i++){
-                StackTraceElement element = Thread.currentThread().getStackTrace()[i];
-                if(element.getClassName().equals("com.liuhanze.iutil.log.ILog") && element.getMethodName().equals("log")){
+            if(text.length() <= MAX_LOG_LENGTH){ //小于单行长度则不打印边框效果
 
-                    for(int j=stackTraceLevel; j>0;j--){
-                        //这里为什么+1 因为本函数上一次是本类的调用函数 LogDebug等
-                        StackTraceElement stack = Thread.currentThread().getStackTrace()[i+1+j];
-                        String stackInfo = IString.concat("-------------"+stack.getClassName(),"/",stack.getMethodName(),"()--------------");
-                        if(stackInfo.length() > endLineLen)
-                            endLineLen = stackInfo.length();
+                StringBuilder stackTrace = new StringBuilder();
+                for(int i=0;i<Thread.currentThread().getStackTrace().length;i++){
+                    StackTraceElement element = Thread.currentThread().getStackTrace()[i];
+                    if(element.getClassName().equals("com.liuhanze.iutil.log.ILog") && element.getMethodName().equals("log")){
 
-                        printLog(type,tag,"|"+stackInfo);
+                        for(int j=stackTraceLevel; j>0;j--){
+                            //这里为什么+1 因为本函数上一次是本类的调用函数 LogDebug等
+                            StackTraceElement stack = Thread.currentThread().getStackTrace()[i+1+j];
+                            String stackInfo = IString.concat(""+stack.getClassName(),":",stack.getMethodName(),"()/");
+                            stackTrace.append(stackInfo);
+                        }
+
+                        break;
                     }
-
-
-                    printLog(type,tag,"|log length :"+text.length());
-
-                    break;
                 }
-            }
 
-            int strLength = text.length();
-            int start = 0;
-            int end = MAX_LOG_LENGTH;
-            int subNum = (int) Math.ceil(text.length()*1.0 / MAX_LOG_LENGTH);
+                stackTrace.append(text);
+                printLog(type,tag,stackTrace.toString());
 
-            for (int i = 0; i < subNum; i++) {
-                //剩下的文本还是大于规定长度则继续重复截取并输出
-                if (strLength > end) {
-                    printLog(type,tag, "|"+(i+1)+"L ("+(end-start)+"c) "+text.substring(start, end));
-                    start = end;
-                    end = end + MAX_LOG_LENGTH;
-                } else {
-                    printLog(type,tag, "|"+(i+1)+"L ("+(strLength-start)+"c) "+text.substring(start, strLength));
-                    break;
+            }else{
+
+                int endLineLen = 0;
+                //打印调用者className，和methodName
+                for(int i=0;i<Thread.currentThread().getStackTrace().length;i++){
+                    StackTraceElement element = Thread.currentThread().getStackTrace()[i];
+                    if(element.getClassName().equals("com.liuhanze.iutil.log.ILog") && element.getMethodName().equals("log")){
+
+                        for(int j=stackTraceLevel; j>0;j--){
+                            //这里为什么+1 因为本函数上一次是本类的调用函数 LogDebug等
+                            StackTraceElement stack = Thread.currentThread().getStackTrace()[i+1+j];
+                            String stackInfo = IString.concat("-------------"+stack.getClassName(),"/",stack.getMethodName(),"()--------------");
+                            if(stackInfo.length() > endLineLen)
+                                endLineLen = stackInfo.length();
+
+                            printLog(type,tag,"|"+stackInfo);
+                        }
+
+
+                        printLog(type,tag,"|log length :"+text.length());
+
+                        break;
+                    }
                 }
-            }
 
-            StringBuilder endLine = new StringBuilder("|");
-            for(int i=0;i<endLineLen;i++){
-                endLine.append("-");
-            }
-            printLog(type,tag,endLine.toString());
+                int strLength = text.length();
+                int start = 0;
+                int end = MAX_LOG_LENGTH;
+                int subNum = (int) Math.ceil(text.length()*1.0 / MAX_LOG_LENGTH);
 
+                for (int i = 0; i < subNum; i++) {
+                    //剩下的文本还是大于规定长度则继续重复截取并输出
+                    if (strLength > end) {
+                        printLog(type,tag, "|"+(i+1)+"L ("+(end-start)+"c) "+text.substring(start, end));
+                        start = end;
+                        end = end + MAX_LOG_LENGTH;
+                    } else {
+                        printLog(type,tag, "|"+(i+1)+"L ("+(strLength-start)+"c) "+text.substring(start, strLength));
+                        break;
+                    }
+                }
+
+                StringBuilder endLine = new StringBuilder("|");
+                for(int i=0;i<endLineLen;i++){
+                    endLine.append("-");
+                }
+                printLog(type,tag,endLine.toString());
+
+            }
         }
+
+
     }
 
     private static void printLog(int type, @NonNull String tag, @NonNull String text){

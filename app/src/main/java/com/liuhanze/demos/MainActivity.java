@@ -89,8 +89,11 @@ public class MainActivity extends Activity {
         String mask = "00000000000000000000000000000000";
         byte[] maskEncode = ISM4.encrypt(IByte.hexStringToBytes(mask),IByte.hexStringToBytes(value),"SM4/ECB/NoPadding",null);
         //ILog.LogDebug("mask encode = "+IByte.bytes2HexString(maskEncode));
-        ILog.setStackTraceLevel(3);
-        ILog.LogDebug(null);
+        ILog.LogDebug("hello world");
+        ILog.LogDebug("hello world1");
+        ILog.LogDebug("hello world2");
+        ILog.LogDebug("hello world3");
+
     }
 
     private void test6(){
