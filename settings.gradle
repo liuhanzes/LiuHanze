@@ -12,6 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "LiuHanze"
+rootProject.name = "IUtil"
 include ':app'
 include ':IUtil'
