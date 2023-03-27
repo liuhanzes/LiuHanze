@@ -6,6 +6,11 @@ import androidx.annotation.NonNull;
 
 import com.liuhanze.iutil.lang.IString;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ILog {
 
     private static final String TAG = "liuhanze";
@@ -15,6 +20,10 @@ public final class ILog {
      * logcat 一条日志最大长度.
      */
     private static final int MAX_LOG_LENGTH = 500;
+    /**
+     * 打印装饰线最小长度
+     */
+    private static final int MIN_LINE_LENGTH = 100;
     /**
      * 日志打印等级，默认只打印向一层函数调用栈，最大可以打印3层
      */
@@ -97,52 +106,42 @@ public final class ILog {
 
         if(isDebug || type == Log.ERROR || Log.WARN == type){
 
-            if(text.length() <= MAX_LOG_LENGTH){ //小于单行长度则不打印边框效果
 
-                StringBuilder stackTrace = new StringBuilder();
-                for(int i=0;i<Thread.currentThread().getStackTrace().length;i++){
-                    StackTraceElement element = Thread.currentThread().getStackTrace()[i];
-                    if(element.getClassName().equals("com.liuhanze.iutil.log.ILog") && element.getMethodName().equals("log")){
+            StringBuilder topLine = new StringBuilder("╔");
+            StringBuilder endLine = new StringBuilder("╚");
+            StringBuilder line = new StringBuilder("╟");
+            List<String> stackList = new ArrayList<>();
+            List<String> logList = new ArrayList<>();
+            int lineLength = MIN_LINE_LENGTH;
 
-                        for(int j=stackTraceLevel; j>0;j--){
-                            //这里为什么+1 因为本函数上一次是本类的调用函数 LogDebug等
-                            StackTraceElement stack = Thread.currentThread().getStackTrace()[i+1+j];
-                            String stackInfo = IString.concat(""+stack.getClassName(),":",stack.getMethodName(),"()/");
-                            stackTrace.append(stackInfo);
+            for(int i=0;i<Thread.currentThread().getStackTrace().length;i++){
+                StackTraceElement element = Thread.currentThread().getStackTrace()[i];
+                if(element.getClassName().equals("com.liuhanze.iutil.log.ILog") && element.getMethodName().equals("log")){
+
+                    for(int j = stackTraceLevel; j>0;j--){
+                        //这里为什么+1 因为本函数上一次是本类的调用函数 LogDebug等
+                        StringBuilder spaceChar = new StringBuilder();
+                        for(int k=0;k<=MAX_STACK_TRACE_LEVEL-j;k++){
+                            spaceChar.append("-");
                         }
 
-                        break;
+                        StackTraceElement stack = Thread.currentThread().getStackTrace()[i+1+j];
+                        String stackInfo = IString.concat("║",spaceChar.toString(),stack.getClassName().substring(stack.getClassName().lastIndexOf(".")+1),".",stack.getMethodName()+"("+stack.getFileName()+":"+stack.getLineNumber()+")\n");
+                        if(stackInfo.length() > lineLength){
+                            lineLength = stackInfo.length();
+                        }
+                        stackList.add(stackInfo);
                     }
+
+                    break;
                 }
+            }
 
-                stackTrace.append(text);
-                printLog(type,tag,stackTrace.toString());
 
+            if(text.length() <= MAX_LOG_LENGTH){
+                logList.add(text);
             }else{
-
-                int endLineLen = 0;
-                //打印调用者className，和methodName
-                for(int i=0;i<Thread.currentThread().getStackTrace().length;i++){
-                    StackTraceElement element = Thread.currentThread().getStackTrace()[i];
-                    if(element.getClassName().equals("com.liuhanze.iutil.log.ILog") && element.getMethodName().equals("log")){
-
-                        for(int j=stackTraceLevel; j>0;j--){
-                            //这里为什么+1 因为本函数上一次是本类的调用函数 LogDebug等
-                            StackTraceElement stack = Thread.currentThread().getStackTrace()[i+1+j];
-                            String stackInfo = IString.concat("-------------"+stack.getClassName(),"/",stack.getMethodName(),"()--------------");
-                            if(stackInfo.length() > endLineLen)
-                                endLineLen = stackInfo.length();
-
-                            printLog(type,tag,"|"+stackInfo);
-                        }
-
-
-                        printLog(type,tag,"|log length :"+text.length());
-
-                        break;
-                    }
-                }
-
+                lineLength = MAX_LOG_LENGTH;
                 int strLength = text.length();
                 int start = 0;
                 int end = MAX_LOG_LENGTH;
@@ -151,24 +150,52 @@ public final class ILog {
                 for (int i = 0; i < subNum; i++) {
                     //剩下的文本还是大于规定长度则继续重复截取并输出
                     if (strLength > end) {
-                        printLog(type,tag, "|"+(i+1)+"L ("+(end-start)+"c) "+text.substring(start, end));
+                        String log = (i+1)+"L ("+(end-start)+"c) "+text.substring(start, end);
+
+                        if(log.length() > lineLength)
+                            lineLength = log.length()+1;
+
+                        logList.add(log);
                         start = end;
                         end = end + MAX_LOG_LENGTH;
                     } else {
-                        printLog(type,tag, "|"+(i+1)+"L ("+(strLength-start)+"c) "+text.substring(start, strLength));
+                        logList.add((i+1)+"L ("+(strLength-start)+"c) "+text.substring(start, strLength));
                         break;
                     }
                 }
 
-                StringBuilder endLine = new StringBuilder("|");
-                for(int i=0;i<endLineLen;i++){
-                    endLine.append("-");
-                }
-                printLog(type,tag,endLine.toString());
-
             }
-        }
 
+            for(int i = 0 ; i < lineLength ; i++){
+                topLine.append("═");
+            }
+            topLine.append("╗");
+
+            for(int i = 0 ; i < lineLength ; i++){
+                line.append("┄");
+            }
+            line.append("╢");
+
+            for(int i = 0 ; i < lineLength ; i++){
+                endLine.append("═");
+            }
+            endLine.append("╝");
+
+
+            printLog(type,tag,topLine.toString());
+
+            for(int i = 0; i<stackList.size();i++){
+                printLog(type,tag,stackList.get(i));
+            }
+            printLog(type,tag,line.toString());
+
+            for(int i = 0 ; i < logList.size() ; i++){
+                printLog(type,tag,"║ "+logList.get(i));
+            }
+
+            printLog(type,tag,endLine.toString());
+
+        }
 
     }
 
