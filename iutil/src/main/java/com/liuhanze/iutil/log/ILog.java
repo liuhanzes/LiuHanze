@@ -31,7 +31,7 @@ public final class ILog {
     /**
      * 日志打印等级，最大可以打印3层
      */
-    private static int MAX_STACK_TRACE_LEVEL = 3;
+    private static final int MAX_STACK_TRACE_LEVEL = 3;
 
     private ILog(){
 
@@ -98,14 +98,13 @@ public final class ILog {
      * @param tag tag
      * @param text 日志
      */
-    private static void log(int type,@NonNull String tag,@NonNull String text){
+    private static synchronized void log(int type,@NonNull String tag,@NonNull String text){
 
         if(IString.isEmpty(text)){
             text = "";
         }
 
         if(isDebug || type == Log.ERROR || Log.WARN == type){
-
 
             StringBuilder topLine = new StringBuilder("╔");
             StringBuilder endLine = new StringBuilder("╚");
@@ -140,6 +139,9 @@ public final class ILog {
 
             if(text.length() <= MAX_LOG_LENGTH){
                 logList.add(text);
+                if(text.length() > lineLength){
+                    lineLength = text.length();
+                }
             }else{
                 lineLength = MAX_LOG_LENGTH;
                 int strLength = text.length();
@@ -182,17 +184,23 @@ public final class ILog {
             endLine.append("╝");
 
 
+            //打印顶部 ╔══════════╗ 装饰线
             printLog(type,tag,topLine.toString());
 
+            //打印调用栈信息
             for(int i = 0; i<stackList.size();i++){
                 printLog(type,tag,stackList.get(i));
             }
+
+            //打印log和调用栈分割线 ╟┄┄┄┄┄┄┄┄┄╢
             printLog(type,tag,line.toString());
 
+            //打印log
             for(int i = 0 ; i < logList.size() ; i++){
                 printLog(type,tag,"║ "+logList.get(i));
             }
 
+            //打印底部 ╚══════════╝ 装饰线
             printLog(type,tag,endLine.toString());
 
         }

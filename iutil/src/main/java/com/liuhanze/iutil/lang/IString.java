@@ -20,7 +20,7 @@ public final class IString {
      * @return {@code true}: 空<br> {@code false}: 不为空
      */
     public static boolean isEmpty(final CharSequence s) {
-        return s == null || s.length() == 0;
+        return s == null || s.length() == 0 || s.equals("null");
     }
 
     /**
@@ -40,7 +40,7 @@ public final class IString {
      * @return {@code true}: null 或全空格<br> {@code false}: 不为 null 且不全空格
      */
     public static boolean isEmptyTrim(final String s) {
-        return (s == null || s.trim().length() == 0);
+        return s == null || s.trim().length() == 0 || s.trim().equals("null");
     }
 
     /**
