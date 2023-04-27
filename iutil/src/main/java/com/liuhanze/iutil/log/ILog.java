@@ -9,6 +9,7 @@ import com.liuhanze.iutil.lang.IString;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class ILog {
@@ -109,39 +110,47 @@ public final class ILog {
             StringBuilder topLine = new StringBuilder("╔");
             StringBuilder endLine = new StringBuilder("╚");
             StringBuilder line = new StringBuilder("╟");
+            String dotLine = new String("┄".getBytes(),StandardCharsets.UTF_8);
+            String fullLine = new String("═".getBytes(),StandardCharsets.UTF_8);
+            String normalFullLine = "════════════════════════════════════════════════════════════════════════════════════════════════════";
+            String normalDotLine = "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄";
+            String verLine = "║ ";
             List<String> stackList = new ArrayList<>();
             List<String> logList = new ArrayList<>();
             int lineLength = MIN_LINE_LENGTH;
 
-            for(int i=0;i<Thread.currentThread().getStackTrace().length;i++){
-                StackTraceElement element = Thread.currentThread().getStackTrace()[i];
-                if(element.getClassName().equals("com.liuhanze.iutil.log.ILog") && element.getMethodName().equals("log")){
+            for(int j = stackTraceLevel; j>0;j--){
 
-                    for(int j = stackTraceLevel; j>0;j--){
-                        //这里为什么+1 因为本函数上一次是本类的调用函数 LogDebug等
-                        StringBuilder spaceChar = new StringBuilder();
-                        for(int k=0;k<=MAX_STACK_TRACE_LEVEL-j;k++){
-                            spaceChar.append("-");
-                        }
+                StackTraceElement stack = Thread.currentThread().getStackTrace()[3+j];
 
-                        StackTraceElement stack = Thread.currentThread().getStackTrace()[i+1+j];
-                        String stackInfo = IString.concat("║",spaceChar.toString(),stack.getClassName().substring(stack.getClassName().lastIndexOf(".")+1),".",stack.getMethodName()+"("+stack.getFileName()+":"+stack.getLineNumber()+")\n");
-                        if(stackInfo.length() > lineLength){
-                            lineLength = stackInfo.length();
-                        }
-                        stackList.add(stackInfo);
-                    }
-
-                    break;
+                StringBuilder spaceChar = new StringBuilder();
+                for(int k=0;k<=MAX_STACK_TRACE_LEVEL-j;k++){
+                    spaceChar.append("-");
                 }
+
+                String stackInfo = IString.concat("║",spaceChar.toString(),stack.getClassName().substring(stack.getClassName().lastIndexOf(".")+1),".",stack.getMethodName()+"("+stack.getFileName()+":"+stack.getLineNumber()+")\n");
+                if(stackInfo.length() > lineLength){
+                    lineLength = stackInfo.length();
+                }
+                stackList.add(stackInfo);
             }
 
-
             if(text.length() <= MAX_LOG_LENGTH){
-                logList.add(text);
-                if(text.length() > lineLength){
-                    lineLength = text.length();
+                List<String> arrayList = Arrays.asList(text.split("\n"));
+                if(arrayList != null && arrayList.size() > 0){
+                    for(String s : arrayList){
+                        if(s.length() > lineLength){
+                            lineLength = s.length()+3;
+                        }
+                        logList.add(s);
+                    }
+                }else{
+                    if(text.length() > lineLength){
+                        lineLength = text.length();
+                    }
+                    logList.add(text);
                 }
+
             }else{
                 lineLength = MAX_LOG_LENGTH;
                 int strLength = text.length();
@@ -168,21 +177,25 @@ public final class ILog {
 
             }
 
-            for(int i = 0 ; i < lineLength ; i++){
-                topLine.append("═");
+            if(lineLength == MIN_LINE_LENGTH){
+                topLine.append(normalFullLine);
+                line.append(normalDotLine);
+                endLine.append(normalFullLine);
+            }else{
+                topLine.append(normalFullLine);
+                line.append(normalDotLine);
+                endLine.append(normalFullLine);
+
+                for(int i = 0 ; i < lineLength-MIN_LINE_LENGTH ; i++){
+                    topLine.append(fullLine);
+                    line.append(dotLine);
+                    endLine.append(fullLine);
+                }
             }
+
             topLine.append("╗");
-
-            for(int i = 0 ; i < lineLength ; i++){
-                line.append("┄");
-            }
             line.append("╢");
-
-            for(int i = 0 ; i < lineLength ; i++){
-                endLine.append("═");
-            }
             endLine.append("╝");
-
 
             //打印顶部 ╔══════════╗ 装饰线
             printLog(type,tag,topLine.toString());
@@ -197,7 +210,7 @@ public final class ILog {
 
             //打印log
             for(int i = 0 ; i < logList.size() ; i++){
-                printLog(type,tag,"║ "+logList.get(i));
+                printLog(type,tag,verLine+logList.get(i));
             }
 
             //打印底部 ╚══════════╝ 装饰线
@@ -209,9 +222,6 @@ public final class ILog {
 
     private static void printLog(int type, @NonNull String tag, @NonNull String text){
         switch (type){
-            case Log.VERBOSE:
-                Log.v(tag,text);
-                break;
             case Log.DEBUG:
                 Log.d(tag,text);
                 break;
