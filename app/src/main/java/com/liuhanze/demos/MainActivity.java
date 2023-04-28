@@ -19,7 +19,6 @@ import com.liuhanze.iutil.file.IFile;
 import com.liuhanze.iutil.lang.IByte;
 import com.liuhanze.iutil.lang.IString;
 import com.liuhanze.iutil.log.ILog;
-import com.liuhanze.iutil.net.INetWork;
 import com.liuhanze.iutil.resource.IResource;
 import com.liuhanze.iutil.security.IAES;
 import com.liuhanze.iutil.security.IBase64;
@@ -78,11 +77,21 @@ public class MainActivity extends Activity {
            // test3();
            // test5();
            // test6();
-           test7();
+           //test7();
+            test8();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void test8(){
+        ILog.setStyle(ILog.BEAUTIFUL_LINE);
+        ILog.setStackTraceLevel(3);
+        ILog.LogDebug("Reconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01\n.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHING");
+        ILog.LogDebug("\n046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHING");
+        ILog.LogDebug("d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHING");
+
     }
 
     private void test7(){
@@ -91,10 +100,10 @@ public class MainActivity extends Activity {
         byte[] maskEncode = ISM4.encrypt(IByte.hexStringToBytes(mask),IByte.hexStringToBytes(value),"SM4/ECB/NoPadding",null);
         //ILog.LogDebug("mask encode = "+IByte.bytes2HexString(maskEncode));
         //ILog.setStackTraceLevel(2);
-        //ILog.LogDebug("Reconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHING");
+        ILog.LogDebug("Reconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHINGReconstruct Branch: AU_LINUX_ANDROID_LA.BR.1.2.3_RB1.05.01.00.036.053 + 7c4888a + 22ca218 + 855d166 + 95575a0 + 4193eef + 64d916f + 88f4cbe + c272012 + 046ce63 + 9b2bddc + d5b5339 + a2bdc2f +  NOTHING");
         ILog.LogDebug("hello world1");
         ILog.LogDebug("hello world2");
-        ILog.LogDebug("");
+       // ILog.LogDebug("");
 
     }
 
