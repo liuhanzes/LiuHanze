@@ -30,7 +30,7 @@ public class ILog extends IPrint{
      */
     protected static final int MAX_LOG_LENGTH = 500;
 
-    private static final String TAG = "liuhanze";
+    private static String TAG = "liuhanze";
     private static boolean isDebug = true;
 
     private ILog(){
@@ -48,6 +48,10 @@ public class ILog extends IPrint{
 
     public static void isDebug(boolean debug){
         isDebug = debug;
+    }
+
+    public static void setTAG(String tag){
+        TAG = tag;
     }
 
     public static void LogDebug(@NonNull String Tag, @NonNull String text){
