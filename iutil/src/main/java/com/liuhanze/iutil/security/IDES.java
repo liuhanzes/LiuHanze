@@ -337,13 +337,13 @@ public final class IDES {
 
         if(key != null && key.length == 16){
             System.arraycopy(key,0,key1,0,8);
-            System.arraycopy(key,8,key2,8,8);
-            System.arraycopy(key,0,key3,16,8);
+            System.arraycopy(key,8,key2,0,8);
+            System.arraycopy(key,0,key3,0,8);
 
         }else if(key != null && key.length == 24){
             System.arraycopy(key,0,key1,0,8);
-            System.arraycopy(key,8,key2,8,8);
-            System.arraycopy(key,16,key3,16,8);
+            System.arraycopy(key,8,key2,0,8);
+            System.arraycopy(key,16,key3,0,8);
         }
 
         if(isEncrypt){
