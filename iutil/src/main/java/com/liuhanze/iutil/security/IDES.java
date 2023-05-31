@@ -247,23 +247,7 @@ public final class IDES {
                                      final byte[] key,
                                      final String transformation,
                                      final byte[] iv) {
-        byte[] mKey = null;
-
-
-        if(key != null && key.length == 16){
-            mKey = new byte[24];
-           System.arraycopy(key,0,mKey,0,8);
-           System.arraycopy(key,8,mKey,8,8);
-           System.arraycopy(key,0,mKey,16,8);
-
-        }else if(key != null && key.length == 24){
-            mKey = new byte[24];
-            System.arraycopy(key,0,mKey,0,8);
-            System.arraycopy(key,8,mKey,8,8);
-            System.arraycopy(key,16,mKey,16,8);
-        }
-
-        return desTemplate(data, mKey, TripleDES_Algorithm, transformation, iv, true);
+        return tdesTemplate(data,key,transformation,iv,true);
     }
 
     /**
@@ -328,25 +312,57 @@ public final class IDES {
                                      final String transformation,
                                      final byte[] iv) {
 
-        byte[] mKey = null;
-        if(key != null && key.length == 16){
-            mKey = new byte[24];
-            System.arraycopy(key,0,mKey,0,8);
-            System.arraycopy(key,8,mKey,8,8);
-            System.arraycopy(key,0,mKey,16,8);
-
-        }else if(key != null && key.length == 24){
-            mKey = new byte[24];
-            System.arraycopy(key,0,mKey,0,8);
-            System.arraycopy(key,8,mKey,8,8);
-            System.arraycopy(key,16,mKey,16,8);
-        }
-
-        return desTemplate(data, mKey, TripleDES_Algorithm, transformation, iv, false);
+        return tdesTemplate(data,key,transformation,iv,false);
     }
 
+
     /**
-     * DES 加密模板
+     * 3des加解密模板
+     * @param data 数据
+     * @param key deskey
+     * @param transformation 填充方式 例如：DESede/ECB/NoPaddin
+     * @param iv 向量
+     * @param isEncrypt      {@code true}: 加密 {@code false}: 解密
+     * @return 密文或者明文，适用于 DES，3DES，AES
+     */
+    private static byte[] tdesTemplate(final byte[] data,
+                                       final byte[] key,
+                                       final String transformation,
+                                       final byte[] iv,
+                                       final boolean isEncrypt){
+
+        byte[] key1 = new byte[8];
+        byte[] key2 = new byte[8];
+        byte[] key3 = new byte[8];
+
+        if(key != null && key.length == 16){
+            System.arraycopy(key,0,key1,0,8);
+            System.arraycopy(key,8,key2,8,8);
+            System.arraycopy(key,0,key3,16,8);
+
+        }else if(key != null && key.length == 24){
+            System.arraycopy(key,0,key1,0,8);
+            System.arraycopy(key,8,key2,8,8);
+            System.arraycopy(key,16,key3,16,8);
+        }
+
+        if(isEncrypt){
+            byte[] decode1 = encryptDES(data,key1,transformation,iv);
+            byte[] decode2 = decryptDES(decode1,key2,transformation,iv);
+            byte[] decode3 = encryptDES(decode2,key3,transformation,iv);
+            return decode3;
+        }else{
+            byte[] decode1 = decryptDES(data,key1,transformation,iv);
+            byte[] decode2 = encryptDES(decode1,key2,transformation,iv);
+            byte[] decode3 = decryptDES(decode2,key3,transformation,iv);
+            return decode3;
+        }
+
+    }
+
+
+    /**
+     * DES 加解密模板
      *
      * @param data           数据
      * @param key            秘钥

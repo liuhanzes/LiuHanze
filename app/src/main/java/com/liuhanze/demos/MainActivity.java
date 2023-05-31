@@ -78,11 +78,20 @@ public class MainActivity extends Activity {
            // test5();
            // test6();
            //test7();
-            test8();
+            test9();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void test9(){
+        String deskey = "00000000000000000000000000000000";
+        String data = "12345678";
+        byte[] encodeB = IDES.encrypt3DES(data.getBytes(),deskey.getBytes(),"DES/ECB/NoPadding",null);
+        ILog.LogDebug("encode = "+IByte.bytes2HexString(encodeB));
+        byte[] decodeB = IDES.decrypt3DES(encodeB,deskey.getBytes(),"DES/ECB/NoPadding",null);
+        ILog.LogDebug("decode = "+new String(decodeB));
     }
 
     private void test8(){
