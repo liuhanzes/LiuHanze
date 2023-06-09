@@ -106,7 +106,7 @@ public class ILog extends IPrint{
      */
     private static synchronized void log(int type,@NonNull String tag,@NonNull String text){
 
-        if(isDebug || type == Log.ERROR || Log.WARN == type){
+        if(isDebug || type == Log.ERROR || Log.WARN == type || Log.INFO == type){
 
             switch (STYLE){
                 case NORMAL:{

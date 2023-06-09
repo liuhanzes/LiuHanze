@@ -194,12 +194,24 @@ public final class ISharedPreferences {
      * @param <T>
      * @return
      */
-    public static <T> boolean putObject(String name,T object){
+    public static <T> boolean putObject(String name,T object) {
+        return putObject(null,name,object);
+    }
+    /**
+     * 保存对象
+     * @param name
+     * @param object
+     * @param <T>
+     * @return
+     */
+    public static <T> boolean putObject(SharedPreferences sp,String name,T object){
         try {
-            SharedPreferences sp = getSharedPreferences(name);
+            if(sp == null){
+                sp = getDefaultSharedPreferences();
+            }
             SharedPreferences.Editor editor = sp.edit();
             String string = new Gson().toJson(object);
-            editor.putString(object.getClass().getName(),string);
+            editor.putString(name,string);
             editor.commit();
         }catch (Exception e){
             return false;
@@ -214,11 +226,25 @@ public final class ISharedPreferences {
      * @param <T>
      * @return
      */
-    public static <T> T getObject(String name,Class<T> object){
+    public static <T> T getObject(String name,Class<T> object) {
+        return getObject(null,name,object);
+    }
+
+    /**
+     * 读取保存的对象数据
+     * @param name
+     * @param object
+     * @param <T>
+     * @return
+     */
+    public static <T> T getObject(SharedPreferences sp,String name,Class<T> object){
         T thisObject = null;
         try {
-            SharedPreferences sp = getSharedPreferences(name);
-            String string = sp.getString(object.getName(),null);
+            if(sp == null){
+                sp = getDefaultSharedPreferences();
+            }
+
+            String string = sp.getString(name,null);
             if(!IString.isEmpty(string)){
                 thisObject = new Gson().fromJson(string,object);
             }

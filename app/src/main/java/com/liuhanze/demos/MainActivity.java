@@ -72,13 +72,13 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
-            //test1();
+            test1();
            // test4();
            // test3();
            // test5();
            // test6();
            //test7();
-            test9();
+           // test9();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
     }
 
     private void test9(){
-        String deskey = "00000000000000000000000000000000";
+        String deskey = "000000000000000000000000000000000000000000000000";
         String data = "12345678";
         byte[] encodeB = IDES.encrypt3DES(data.getBytes(),deskey.getBytes(),"DES/ECB/NoPadding",null);
         ILog.LogDebug("encode = "+IByte.bytes2HexString(encodeB));
@@ -206,18 +206,18 @@ public class MainActivity extends Activity {
         sheep.setName("花花");
         ISharedPreferences.putObject("huahua",sheep);
 
-        ILog.LogDebug("哈哈哈哈");
-        IToast.shortToast("哈哈哈");
+       // ILog.LogDebug("哈哈哈哈");
+       // IToast.shortToast("哈哈哈");
         ILog.LogDebug("下面输出花花");
         Sheep huahua = ISharedPreferences.getObject("huahua",Sheep.class);
         ILog.LogDebug(IString.concat("花花年龄 = ",huahua.getAge(),"花花名字 = ",huahua.getName()));
 
-        ISharedPreferences.put("one","哈哈 ");
-        ISharedPreferences.put("two","123");
-        String hh  = ISharedPreferences.get("one","default");
-        int a = ISharedPreferences.get("aa",1);
-        ILog.LogDebug(IString.concat("one text",hh,a));
-        ISharedPreferences.get("two","123");
+//        ISharedPreferences.put("one","哈哈 ");
+//        ISharedPreferences.put("two","123");
+//        String hh  = ISharedPreferences.get("one","default");
+//        int a = ISharedPreferences.get("aa",1);
+//        ILog.LogDebug(IString.concat("one text",hh,a));
+//        ISharedPreferences.get("two","123");
 
     }
 

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -118,22 +119,22 @@ public final class IRSA {
     }
 
     /**
-     * 用公钥加密 <br>
+     * 加密 <br>
      * 每次加密的字节数，不能超过密钥的长度值减去11
      *
      * @param data
      *            需加密数据的byte数据
-     * @param publicKey
-     *            公钥
+     * @param key
+     *            加密key
      * @return 加密后的byte型数据
      */
-    public static byte[] encryptData(byte[] data, PublicKey publicKey,String transformation)
+    public static byte[] encryptData(byte[] data, Key key, String transformation)
     {
         try
         {
             Cipher cipher = Cipher.getInstance(transformation);
             // 编码前设定编码方式及密钥
-            cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+            cipher.init(Cipher.ENCRYPT_MODE, key);
             // 传入编码数据并返回编码结果
             return cipher.doFinal(data);
         } catch (Exception e)
@@ -145,20 +146,20 @@ public final class IRSA {
     }
 
     /**
-     * 用私钥解密
+     * 解密
      *
      * @param encryptedData
      *            经过encryptedData()加密返回的byte数据
-     * @param privateKey
-     *            私钥
+     * @param key
+     *            解密key
      * @return
      */
-    public static byte[] decryptData(byte[] encryptedData, PrivateKey privateKey,String algorithm)
+    public static byte[] decryptData(byte[] encryptedData, Key key,String algorithm)
     {
         try
         {
             Cipher cipher = Cipher.getInstance(algorithm);
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            cipher.init(Cipher.DECRYPT_MODE, key);
             return cipher.doFinal(encryptedData);
         } catch (Exception e)
         {
