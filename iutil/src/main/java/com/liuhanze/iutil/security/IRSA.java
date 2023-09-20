@@ -28,9 +28,10 @@ import javax.crypto.Cipher;
 
 public final class IRSA {
 
-    public static String RSA = "RSA";
-    public static String RSA_PKCS1_PADDING = "RSA/NONE/PKCS1Padding";
-    public static String RSA_NO_PADDING = "RSA/NONE/NoPadding";
+    public static final String RSA = "RSA";
+    public static final String RSA_PKCS1_PADDING = "RSA/NONE/PKCS1Padding";
+    public static final String RSA_NO_PADDING = "RSA/NONE/NoPadding";
+    public static final String RSA_ECB_PKCS1_PADDING = "RSA/ECB/PKCS1Padding";
 
     private IRSA(){
 

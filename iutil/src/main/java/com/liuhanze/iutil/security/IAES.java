@@ -12,6 +12,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class IAES {
 
+    public static final String AES_NO_PADDING = "AES/ECB/NoPadding";
+
+
     private IAES(){
 
     }

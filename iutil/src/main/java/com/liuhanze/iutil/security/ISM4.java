@@ -14,6 +14,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class ISM4 {
 
+    public static final String SM4_NO_PADDING = "SM4/ECB/NoPadding";
+
+
     private ISM4(){
 
     }

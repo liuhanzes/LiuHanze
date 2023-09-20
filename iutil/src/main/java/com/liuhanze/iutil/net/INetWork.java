@@ -284,7 +284,7 @@ public final class INetWork {
      * @return {@code true}: 是<br>{@code false}: 否
      */
     @RequiresPermission(ACCESS_NETWORK_STATE)
-    private static boolean isEthernet() {
+    public static boolean isEthernet() {
         final ConnectivityManager cm = getConnectivityManager();
         if (cm == null) {
             return false;
