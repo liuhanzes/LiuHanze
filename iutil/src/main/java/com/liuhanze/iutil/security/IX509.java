@@ -112,6 +112,7 @@ public final class IX509 {
         }
     }
 
+
     /**
      * 根据inputStream 获取一个证书
      *
@@ -123,9 +124,28 @@ public final class IX509 {
      * @return
      */
     public static Certificate getCertificate(InputStream in){
+        return getCertificate(in,null);
+    }
+
+    /**
+     * 根据inputStream 获取一个证书
+     *
+     * example:string to inputStream
+     * String cert;
+     * InputStream cerInputStream = new ByteArrayInputStream(cert.getBytes());
+     *
+     * @param in
+     * @return
+     */
+    public static Certificate getCertificate(InputStream in,String provider){
         Certificate certificate = null;
+        CertificateFactory certificateFactory = null;
         try {
-            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509);
+            if(provider != null)
+                certificateFactory = CertificateFactory.getInstance(X509,provider);
+            else{
+                certificateFactory = CertificateFactory.getInstance(X509);
+            }
             certificate = certificateFactory.generateCertificate(in);
         } catch (CertificateException e) {
             e.printStackTrace();
@@ -134,23 +154,16 @@ public final class IX509 {
         }
     }
 
-    /**
-     * 根据byte[] 获取一个证书
-     * @param bytes
-     * @return
-     */
     public static Certificate getCertificate(byte[] bytes){
-        Certificate certificate = null;
-        try {
-            InputStream cerInputStream = new ByteArrayInputStream(bytes);
-            CertificateFactory certificateFactory = CertificateFactory.getInstance(X509);
-            certificate = certificateFactory.generateCertificate(cerInputStream);
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        }finally {
-            return certificate;
-        }
+        InputStream cerInputStream = new ByteArrayInputStream(bytes);
+        return getCertificate(cerInputStream);
     }
+
+    public static Certificate getCertificate(byte[] bytes,String provider){
+        InputStream cerInputStream = new ByteArrayInputStream(bytes);
+        return getCertificate(cerInputStream,provider);
+    }
+
 
     /**
      * 签验，返回签验是否通过
