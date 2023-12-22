@@ -61,6 +61,10 @@ public final class IByte {
         return stringBuilder.toString();
     }
 
+    public static boolean isEmpty(byte[] data){
+        return data == null || data.length == 0;
+    }
+
     /**
      * byte[]数组转换为16进制的字符串
      *

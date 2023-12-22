@@ -92,6 +92,7 @@ public final class IApp {
         private String versionName;
         private int versionCode;
         private boolean isSystem;
+        private long firstInstallTime;
 
         public Drawable getIcon() {
             return icon;
@@ -149,6 +150,14 @@ public final class IApp {
             this.versionName = versionName;
         }
 
+        public long getFirstInstallTime() {
+            return firstInstallTime;
+        }
+
+        public void setFirstInstallTime(long firstInstallTime) {
+            this.firstInstallTime = firstInstallTime;
+        }
+
         /**
          * @param name        名称
          * @param icon        图标
@@ -159,7 +168,7 @@ public final class IApp {
          * @param isSystem    是否系统应用
          */
         public AppInfo(String packageName, String name, Drawable icon, String packagePath,
-                       String versionName, int versionCode, boolean isSystem) {
+                       String versionName, int versionCode, boolean isSystem,long firstInstallTime) {
             this.setName(name);
             this.setIcon(icon);
             this.setPackageName(packageName);
@@ -167,17 +176,21 @@ public final class IApp {
             this.setVersionName(versionName);
             this.setVersionCode(versionCode);
             this.setSystem(isSystem);
+            this.setFirstInstallTime(firstInstallTime);
         }
 
-        @NonNull
         @Override
         public String toString() {
-            return "pkg name: " + getPackageName() +
-                    "\napp name: " + getName() +
-                    "\napp path: " + getPackagePath() +
-                    "\napp v name: " + getVersionName() +
-                    "\napp v code: " + getVersionCode() +
-                    "\nis system: " + isSystem();
+            return "AppInfo{" +
+                    "name='" + name + '\'' +
+                    ", icon=" + icon +
+                    ", packageName='" + packageName + '\'' +
+                    ", packagePath='" + packagePath + '\'' +
+                    ", versionName='" + versionName + '\'' +
+                    ", versionCode=" + versionCode +
+                    ", isSystem=" + isSystem +
+                    ", firstInstallTime=" + firstInstallTime +
+                    '}';
         }
     }
 
@@ -227,8 +240,9 @@ public final class IApp {
         String packagePath = ai.sourceDir;
         String versionName = pi.versionName;
         int versionCode = pi.versionCode;
+        long firstInstallTime = pi.firstInstallTime;
         boolean isSystem = (ApplicationInfo.FLAG_SYSTEM & ai.flags) != 0;
-        return new AppInfo(packageName, name, icon, packagePath, versionName, versionCode, isSystem);
+        return new AppInfo(packageName, name, icon, packagePath, versionName, versionCode, isSystem,firstInstallTime);
     }
 
     /**

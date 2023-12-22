@@ -143,9 +143,9 @@ public final class IX509 {
         try {
             if(provider != null)
                 certificateFactory = CertificateFactory.getInstance(X509,provider);
-            else{
+            else
                 certificateFactory = CertificateFactory.getInstance(X509);
-            }
+
             certificate = certificateFactory.generateCertificate(in);
         } catch (CertificateException e) {
             e.printStackTrace();
