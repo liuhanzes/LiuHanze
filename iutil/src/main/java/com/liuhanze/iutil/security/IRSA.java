@@ -276,23 +276,11 @@ public final class IRSA {
      */
     public static PrivateKey loadPrivateKey(String privateKeyStr,String algorithm) throws Exception
     {
-        try
-        {
-            byte[] buffer = IBase64.decodeCertificateKey(privateKeyStr);
-            // X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
-            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(buffer);
-            KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
-            return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
-        } catch (NoSuchAlgorithmException e)
-        {
-            throw new Exception("无此算法");
-        } catch (InvalidKeySpecException e)
-        {
-            throw new Exception("私钥非法");
-        } catch (NullPointerException e)
-        {
-            throw new Exception("私钥数据为空");
-        }
+        byte[] buffer = IBase64.decodeCertificateKey(privateKeyStr);
+        // X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(buffer);
+        KeyFactory keyFactory = KeyFactory.getInstance(algorithm);
+        return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
     }
 
 
